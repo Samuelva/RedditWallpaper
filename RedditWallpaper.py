@@ -2,23 +2,23 @@ import imghdr
 import os
 import praw
 from pprint import pprint
+import random
 import struct
 import sys
 import urllib.request
-from time import sleep
 
 directory = "/media/samuel/Data/Afbeeldingen/Wallpapers/"
-subreddits = ["earthporn", "animalporn", ""]
+subreddits = ["earthporn", "animalporn", "wallpaper", "topwalls", "wallpapers"]
 
-def main():
+def main(subredditChoice):
     user_agent = "python:RedditWallpapers:v2.0 (by /u/suryoye)"
     r = praw.Reddit(user_agent=user_agent)
 
-    subreddit = r.get_subreddit("animalporn")
+    subreddit = r.get_subreddit(subredditChoice)
 
     for submission in subreddit.get_top_from_day():
         image_name = submission.url.split("/")[-1]
-
+        print(directory+image_name)
         if not validate_submission(image_name):
             continue
 
@@ -55,7 +55,7 @@ def get_image_size(fname):
             width, height = struct.unpack('<HH', head[6:10])
         elif imghdr.what(fname) == 'jpeg':
             try:
-                fhandle.seek(0) # Read 0xff next
+                fhandle.seek(0)
                 size = 2
                 ftype = 0
                 while not 0xc0 <= ftype <= 0xcf:
@@ -74,10 +74,15 @@ def get_image_size(fname):
         return width, height
 
 def validate_resolution(resolution):
+    if resolution in ["", " "]:
+        return False
     if resolution[0] >= 1920 and resolution[1] >= 1080:
         return True
     else:
         return False
 
-
-main()
+if __name__ == "__main__":
+    if len(sys.argv) > 0:
+        main(sys.argv[1])
+    else:
+        main(random.choice(subreddits))
