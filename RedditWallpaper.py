@@ -8,7 +8,7 @@ import sys
 import urllib.request
 
 directory = "/media/samuel/Data/Afbeeldingen/Wallpapers/"
-subreddits = ["earthporn", "animalporn", "wallpaper", "topwalls", "wallpapers"]
+subreddits = ["earthporn", "animalporn", "wallpaper", "topwalls", "wallpapers", "cats"]
 
 def main(subredditChoice):
     user_agent = "python:RedditWallpapers:v2.0 (by /u/suryoye)"
