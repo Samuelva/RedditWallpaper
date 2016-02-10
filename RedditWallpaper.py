@@ -19,13 +19,16 @@ def main(subredditChoice):
 
     for submission in subreddit.get_top_from_day():
         image_name = submission.url.split("/")[-1]
-        
+
         print(submission.url)
 
         if not allowed_extension(image_name):
             continue
 
-        urllib.request.urlretrieve(submission.url, directory+image_name)
+        try:
+            urllib.request.urlretrieve(submission.url, directory+image_name)
+        except urllib.error.HTTPError:
+            continue
 
         if allowed_resolution(directory+image_name):
             os.system("gsettings set org.gnome.desktop.background picture-uri file://%(path)s" % {'path':directory+image_name})
