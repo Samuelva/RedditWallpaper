@@ -9,12 +9,16 @@ import urllib.request
 directory = "/home/samuel/Pictures/Wallpapers/"
 subreddits = ["earthporn", "animalporn", "wallpaper", "topwalls", "wallpapers"]
 
-def main(subredditChoice):
+def main(arg):
     conn = sqlite3.connect("Wallpaper.db")
     c = conn.cursor()
     user_agent = "python:RedditWallpapers:v2.0"
     r = praw.Reddit(user_agent=user_agent)
 
+    get_from_reddit(conn, c, r, arg)
+
+
+def get_from_reddit(conn, c, r, subredditChoice):
     subreddit = r.get_subreddit(subredditChoice)
 
     for submission in subreddit.get_top_from_day():
@@ -37,8 +41,9 @@ def main(subredditChoice):
             break
         else:
             os.system("rm %s" % directory+image_name)
+            continue
 
-        print("Sorry, no qualified wallpaper has been found.")
+        print("Sorry, no qualified wallpaper has been found in this subreddit.")
 
 def allowed_extension(image):
     if image.split(".")[-1] in ["jpg", "png"]:
@@ -54,7 +59,7 @@ def allowed_resolution(image):
             return False
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        main(sys.argv[1])
+    if sys.argv[1] == "-r" and len(sys.argv) > 2:
+        main(sys.argv[2])
     else:
         main(random.choice(subreddits))
