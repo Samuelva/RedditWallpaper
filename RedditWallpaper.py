@@ -20,7 +20,6 @@ def main(subredditChoice):
     for submission in subreddit.get_top_from_day():
         image_name = submission.url.split("/")[-1]
         print(submission.url)
-        print(directory+image_name)
         if not validate_submission(image_name):
             continue
 
@@ -37,7 +36,7 @@ def main(subredditChoice):
 
 def validate_submission(image_name):
     print(image_name.split(".")[-1])
-    if image_name.split(".")[-1] in ["jpg", "png", "gif"]:
+    if image_name.split(".")[-1] in ["jpg", "png"]:
         return True
     else:
         False
@@ -46,7 +45,7 @@ def get_image_size(image):
     with Image.open(image) as im:
         print("grootte", im.size)
     return im.size
-    
+
 # def get_image_size(fname):
 #     with open(fname, 'rb') as fhandle:
 #         head = fhandle.read(24)
