@@ -1,10 +1,7 @@
-import imghdr
 import os
 import praw
 from PIL import Image
-from pprint import pprint
 import random
-import struct
 import sys
 import urllib.request
 
