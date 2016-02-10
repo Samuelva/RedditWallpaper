@@ -7,8 +7,14 @@ def main(arg):
 
 	if arg in ["-r", "r", "recreate"]:
 		c.execute("""DROP TABLE wallpapers""")
-
-	c.execute("""CREATE TABLE wallpapers (image text)""")
+		c.execute("""CREATE TABLE wallpapers (image text)""")
+		with open("wallpapers.txt", "r") as infile:
+			for line in infile.read().split("\n"):
+				if line in ("", " "):
+					continue
+				c.execute("INSERT INTO wallpapers VALUES (?)", (line,))
+	else:
+		c.execute("""CREATE TABLE wallpapers (image text)""")
 
 	conn.commit()
 	conn.close()

@@ -7,7 +7,7 @@ import sys
 import urllib.request
 
 directory = "/home/samuel/Pictures/Wallpapers/"
-subreddits = ["earthporn", "animalporn", "wallpaper", "topwalls", "wallpapers"]
+subreddits = ["earthporn", "spaceporn", "wallpaper", "topwalls", "wallpapers"]
 
 def main(arg):
     conn = sqlite3.connect("Wallpaper.db")
