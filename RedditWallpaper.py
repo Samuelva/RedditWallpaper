@@ -15,10 +15,16 @@ def main(arg):
     user_agent = "python:RedditWallpapers:v2.0"
     r = praw.Reddit(user_agent=user_agent)
 
-    get_from_reddit(conn, c, r, arg)
+    if arg == "x":
+        get_from_database(conn, c, arg)
+    else:
+        get_from_reddit(c, r, arg)
+
+    conn.commit()
+    conn.close()
 
 
-def get_from_reddit(conn, c, r, subredditChoice):
+def get_from_reddit(c, r, subredditChoice):
     subreddit = r.get_subreddit(subredditChoice)
 
     for submission in subreddit.get_top_from_day():
@@ -33,17 +39,22 @@ def get_from_reddit(conn, c, r, subredditChoice):
             continue
 
         if allowed_resolution(directory+image_name):
+            change_wallpaper(directory+image_name)
             os.system("gsettings set org.gnome.desktop.background picture-uri file://%(path)s" % {'path':directory+image_name})
             os.system("gsettings set org.gnome.desktop.background picture-options wallpaper")
-            c.execute("INSERT INTO wallpapers VALUES (?)", (image_name,))
-            conn.commit()
-            conn.close()
+            c.execute("INSERT INTO wallpapers VALUES (?)", (directory+image_name,))
             break
         else:
             os.system("rm %s" % directory+image_name)
             continue
 
-        print("Sorry, no qualified wallpaper has been found in this subreddit.")
+def change_wallpaper(image):
+    os.system("gsettings set org.gnome.desktop.background picture-uri file://%(path)s" % {'path':image})
+    os.system("gsettings set org.gnome.desktop.background picture-options wallpaper")
+
+def get_from_database(conn, c, arg):
+    for row in c.execute("SELECT * FROM wallpapers ORDER BY RANDOM() LIMIT 1"):
+        change_wallpaper(row[0])
 
 def allowed_extension(image):
     if image.split(".")[-1] in ["jpg", "png"]:
@@ -61,5 +72,7 @@ def allowed_resolution(image):
 if __name__ == "__main__":
     if sys.argv[1] == "-r" and len(sys.argv) > 2:
         main(sys.argv[2])
+    elif sys.argv[1] == "-r" and len(sys.argv) == 2:
+        main("x")
     else:
         main(random.choice(subreddits))
