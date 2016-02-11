@@ -15,7 +15,7 @@ def main(arg):
     user_agent = "python:RedditWallpapers:v2.0"
     r = praw.Reddit(user_agent=user_agent)
 
-    if arg == "x":
+    if arg == "-db":
         get_from_database(conn, c, arg)
     else:
         get_from_reddit(c, r, arg)
@@ -69,10 +69,21 @@ def allowed_resolution(image):
         else:
             return False
 
+def check_connectivity():
+    try:
+        urllib.request.urlopen("https://google.com", timeout=1)
+        return True
+    except urllib.request.URLError:
+        print("dubbelkek")
+        return False
+
 if __name__ == "__main__":
-    if sys.argv[1] == "-r" and len(sys.argv) > 2:
-        main(sys.argv[2])
-    elif sys.argv[1] == "-r" and len(sys.argv) == 2:
-        main("x")
+    if check_connectivity():
+        if sys.argv[1] == "-r" and len(sys.argv) > 2:
+            main(sys.argv[2])
+        elif sys.argv[1] == "-db" and len(sys.argv) == 2:
+            main("-db")
+        else:
+            main(random.choice(subreddits))
     else:
-        main(random.choice(subreddits))
+        main("-db")
