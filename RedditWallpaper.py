@@ -15,6 +15,10 @@ def main(arg):
     user_agent = "python:RedditWallpapers:v2.0"
     r = praw.Reddit(user_agent=user_agent)
 
+    kek = c.execute("SELECT * FROM wallpapers")
+    for kek2 in kek:
+        print(kek2)
+
     if arg == "-db":
         get_from_database(conn, c, arg)
     else:
@@ -30,7 +34,7 @@ def get_from_reddit(c, r, subredditChoice):
     for submission in subreddit.get_top_from_day():
         image_name = submission.url.split("/")[-1]
 
-        if not allowed_extension(image_name):
+        if not allowed_extension(c, image_name):
             continue
 
         try:
@@ -56,7 +60,10 @@ def get_from_database(conn, c, arg):
     for row in c.execute("SELECT * FROM wallpapers ORDER BY RANDOM() LIMIT 1"):
         change_wallpaper(row[0])
 
-def allowed_extension(image):
+def allowed_extension(c, image):
+    for row in c.execute("SELECT * FROM wallpapers"):
+        if image in row[0]:
+            return False
     if image.split(".")[-1] in ["jpg", "png"]:
         return True
     else:
@@ -74,7 +81,6 @@ def check_connectivity():
         urllib.request.urlopen("https://google.com", timeout=1)
         return True
     except urllib.request.URLError:
-        print("dubbelkek")
         return False
 
 if __name__ == "__main__":
