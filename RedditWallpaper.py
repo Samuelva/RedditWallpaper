@@ -15,10 +15,6 @@ def main(arg):
     user_agent = "python:RedditWallpapers:v2.0"
     r = praw.Reddit(user_agent=user_agent)
 
-    kek = c.execute("SELECT * FROM wallpapers")
-    for kek2 in kek:
-        print(kek2)
-
     if arg == "-db":
         get_from_database(conn, c, arg)
     else:
