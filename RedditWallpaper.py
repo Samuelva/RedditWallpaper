@@ -30,7 +30,7 @@ def get_from_reddit(c, r, subredditChoice):
     for submission in subreddit.get_top_from_day():
         image_name = submission.url.split("/")[-1]
 
-        if not allowed_extension(c, image_name):
+        if not valid_submission(c, image_name):
             continue
 
         try:
@@ -56,7 +56,7 @@ def get_from_database(conn, c, arg):
     for row in c.execute("SELECT * FROM wallpapers ORDER BY RANDOM() LIMIT 1"):
         change_wallpaper(row[0])
 
-def allowed_extension(c, image):
+def valid_submission(c, image):
     for row in c.execute("SELECT * FROM wallpapers"):
         if image in row[0]:
             return False
